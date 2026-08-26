@@ -99,6 +99,15 @@ function initAboutModal() {
         openModal();
     });
 
+    // Header nav link (Hakkımızda) - same modal
+    const aboutLinkNav = document.getElementById('about-link-nav');
+    if (aboutLinkNav) {
+        aboutLinkNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal();
+        });
+    }
+
     closeBtn.addEventListener('click', closeModal);
 
     // Close when clicking on overlay backdrop
@@ -130,81 +139,12 @@ function initAppointmentForm() {
     // Initialize phone input mask and prefix
     initPhoneMask();
 
-    // Set minimum date picker target to today to prevent past dates
     const dateInput = document.getElementById('form-date');
     const timeSelect = document.getElementById('form-time');
 
-    if (dateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('min', today);
+    // Launch custom calendar
+    initCalendar(dateInput, timeSelect);
 
-        // Helper: check if a date is fully booked (all clinic hours taken)
-        const isDateFullyBooked = (dateStr) => {
-            return CLINIC_HOURS.every(hour => busyAppointments.includes(`${dateStr} ${hour}`));
-        };
-
-        // Helper: find the "fully booked" warning span next to the date input
-        const getDateWarning = () => document.getElementById('date-fully-booked-warning');
-
-        // Date selection dynamic change listener
-        dateInput.addEventListener('change', () => {
-            const selectedDate = dateInput.value;
-
-            // Remove previous warning
-            const existingWarning = getDateWarning();
-            if (existingWarning) existingWarning.remove();
-
-            if (!selectedDate) {
-                if (timeSelect) {
-                    timeSelect.disabled = true;
-                    timeSelect.innerHTML = '<option value="" disabled selected>Önce tarih seçiniz</option>';
-                }
-                return;
-            }
-
-            // Check if the whole day is fully booked
-            if (isDateFullyBooked(selectedDate)) {
-                // Show inline warning under the date picker
-                const warning = document.createElement('span');
-                warning.id = 'date-fully-booked-warning';
-                warning.className = 'error-message';
-                warning.style.display = 'block';
-                warning.textContent = 'Bu tarih için tüm saatler dolmuştur. Lütfen başka bir gün seçin.';
-                dateInput.parentNode.appendChild(warning);
-
-                if (timeSelect) {
-                    timeSelect.disabled = true;
-                    timeSelect.innerHTML = '<option value="" disabled selected>Bu gün için boş saat kalmadı</option>';
-                }
-                return;
-            }
-
-            if (timeSelect) {
-                timeSelect.disabled = false;
-                timeSelect.innerHTML = '<option value="" disabled selected>Saat seçiniz</option>';
-
-                let availableSlotsCount = 0;
-                CLINIC_HOURS.forEach(hour => {
-                    const dateTimeString = `${selectedDate} ${hour}`;
-                    if (!busyAppointments.includes(dateTimeString)) {
-                        const opt = document.createElement('option');
-                        opt.value = hour;
-                        opt.textContent = hour;
-                        timeSelect.appendChild(opt);
-                        availableSlotsCount++;
-                    }
-                });
-
-                if (availableSlotsCount === 0) {
-                    timeSelect.disabled = true;
-                    timeSelect.innerHTML = '<option value="" disabled selected>Bu gün için boş saat kalmadı</option>';
-                }
-
-                // Trigger validation state update
-                validateField(timeSelect);
-            }
-        });
-    }
 
     // Helper: Show error on a form group
     const showError = (inputElement) => {
@@ -283,7 +223,7 @@ function initAppointmentForm() {
     // Validate all fields inside the form
     const validateForm = () => {
         let isFormValid = true;
-        const inputs = form.querySelectorAll('input, select, textarea');
+        const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
 
         inputs.forEach(input => {
             // Skip optional fields if they are empty
@@ -297,6 +237,14 @@ function initAppointmentForm() {
                 isFormValid = false;
             }
         });
+
+        // Manually validate hidden date input (calendar widget)
+        if (dateInput && !dateInput.value) {
+            const calGroup = document.getElementById('cal-widget') &&
+                             document.getElementById('cal-widget').closest('.form-group');
+            if (calGroup) calGroup.classList.add('is-invalid');
+            isFormValid = false;
+        }
 
         return isFormValid;
     };
@@ -415,17 +363,194 @@ function initAppointmentForm() {
     // Handle Reset Button on Success State
     resetBtn.addEventListener('click', () => {
         successContainer.classList.remove('is-active');
-        // Reset min date
-        if (dateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.setAttribute('min', today);
+
+        // Clear hidden date input
+        if (dateInput) dateInput.value = '';
+
+        // Remove calendar selection highlight
+        const calGrid = document.getElementById('cal-grid');
+        if (calGrid) {
+            const sel = calGrid.querySelector('.cal-day--selected');
+            if (sel) sel.classList.remove('cal-day--selected');
         }
+
         // Lock time select
         if (timeSelect) {
             timeSelect.disabled = true;
             timeSelect.innerHTML = '<option value="" disabled selected>Önce tarih seçiniz</option>';
         }
     });
+}
+
+/**
+ * Custom Calendar Widget
+ * Renders a month grid with: past dates disabled, weekends disabled,
+ * fully-booked days marked, and time slots populated on selection.
+ */
+function initCalendar(dateInput, timeSelect) {
+    const grid = document.getElementById('cal-grid');
+    const monthLabel = document.getElementById('cal-month-label');
+    const prevBtn = document.getElementById('cal-prev');
+    const nextBtn = document.getElementById('cal-next');
+
+    if (!grid || !monthLabel || !prevBtn || !nextBtn) return;
+
+    const TR_MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
+                       'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+    const todayObj = new Date();
+    todayObj.setHours(0, 0, 0, 0);
+
+    // State: which month/year is displayed
+    let viewYear = todayObj.getFullYear();
+    let viewMonth = todayObj.getMonth(); // 0-indexed
+
+    // Currently selected date string YYYY-MM-DD
+    let selectedDateStr = '';
+
+    // Helper: format Date to YYYY-MM-DD
+    const toDateStr = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
+    // Helper: is date in the past (before today)
+    const isPast = (d) => d < todayObj;
+
+    // Helper: is weekend (0=Sun, 6=Sat)
+    const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+
+    // Helper: is fully booked
+    const isFullyBooked = (dateStr) =>
+        CLINIC_HOURS.every(h => busyAppointments.includes(`${dateStr} ${h}`));
+
+    // Populate time select for chosen date
+    const populateTimes = (dateStr) => {
+        if (!timeSelect) return;
+        timeSelect.innerHTML = '<option value="" disabled selected>Saat seçiniz</option>';
+        timeSelect.disabled = false;
+
+        let count = 0;
+        CLINIC_HOURS.forEach(hour => {
+            if (!busyAppointments.includes(`${dateStr} ${hour}`)) {
+                const opt = document.createElement('option');
+                opt.value = hour;
+                opt.textContent = hour;
+                timeSelect.appendChild(opt);
+                count++;
+            }
+        });
+
+        if (count === 0) {
+            timeSelect.disabled = true;
+            timeSelect.innerHTML = '<option value="" disabled selected>Bu gün için boş saat kalmadı</option>';
+        }
+    };
+
+    // Reset time select
+    const resetTimes = () => {
+        if (!timeSelect) return;
+        timeSelect.disabled = true;
+        timeSelect.innerHTML = '<option value="" disabled selected>Önce tarih seçiniz</option>';
+    };
+
+    // Render calendar grid for viewYear / viewMonth
+    const render = () => {
+        monthLabel.textContent = `${TR_MONTHS[viewMonth]} ${viewYear}`;
+        grid.innerHTML = '';
+
+        // First day of month (0=Sun … 6=Sat), convert to Mon-based (0=Mon … 6=Sun)
+        const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+        const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
+        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+        // Empty cells before first day
+        for (let i = 0; i < startOffset; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'cal-day cal-day--empty';
+            grid.appendChild(empty);
+        }
+
+        // Day cells
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateObj = new Date(viewYear, viewMonth, d);
+            const dateStr = toDateStr(dateObj);
+            const cell = document.createElement('div');
+            cell.className = 'cal-day';
+            cell.textContent = d;
+
+            const past = isPast(dateObj);
+            const weekend = isWeekend(dateObj);
+            const fullyBooked = !past && !weekend && isFullyBooked(dateStr);
+
+            if (past) {
+                cell.classList.add('cal-day--disabled');
+            } else if (weekend) {
+                cell.classList.add('cal-day--weekend');
+            } else if (fullyBooked) {
+                cell.classList.add('cal-day--fully-booked');
+                cell.title = 'Bu gün dolu';
+            } else {
+                // Today highlight
+                if (dateStr === toDateStr(todayObj)) {
+                    cell.classList.add('cal-day--today');
+                }
+                // Already selected
+                if (dateStr === selectedDateStr) {
+                    cell.classList.add('cal-day--selected');
+                }
+
+                cell.addEventListener('click', () => {
+                    // Deselect previous
+                    const prev = grid.querySelector('.cal-day--selected');
+                    if (prev) prev.classList.remove('cal-day--selected');
+
+                    cell.classList.add('cal-day--selected');
+                    selectedDateStr = dateStr;
+
+                    // Update hidden input and fire change event
+                    if (dateInput) {
+                        dateInput.value = dateStr;
+                        dateInput.dispatchEvent(new Event('change'));
+                    }
+
+                    // Remove any leftover validation error on calendar group
+                    const group = document.getElementById('cal-widget').closest('.form-group');
+                    if (group) group.classList.remove('is-invalid');
+
+                    populateTimes(dateStr);
+                });
+            }
+
+            grid.appendChild(cell);
+        }
+
+        // Disable prev button if we're already on current month
+        const isCurrentMonth = (viewYear === todayObj.getFullYear() && viewMonth === todayObj.getMonth());
+        prevBtn.disabled = isCurrentMonth;
+        prevBtn.style.opacity = isCurrentMonth ? '0.3' : '';
+        prevBtn.style.cursor = isCurrentMonth ? 'not-allowed' : '';
+    };
+
+    prevBtn.addEventListener('click', () => {
+        const isCurrentMonth = (viewYear === todayObj.getFullYear() && viewMonth === todayObj.getMonth());
+        if (isCurrentMonth) return;
+        viewMonth--;
+        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        render();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        viewMonth++;
+        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        render();
+    });
+
+    // Initial render
+    render();
+    resetTimes();
 }
 
 /**
