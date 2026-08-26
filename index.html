@@ -22,6 +22,7 @@
             <nav class="main-nav">
                 <a href="#galeri">Mutlu Müşteriler</a>
                 <a href="#randevu">Randevu & İletişim</a>
+                <a href="#" id="about-link-nav" class="nav-about-link">Hakkımızda</a>
             </nav>
             <div class="header-action">
                 <a href="#randevu" class="btn btn-secondary">Randevu Al</a>
@@ -34,6 +35,324 @@
         <section class="hero-section">
             <div class="hero-container">
                 <div class="hero-content">
+                    <h1 class="hero-title">Gülüşünüzü sanata dönüştüren detaylar.</h1>
+                    <p class="hero-description">
+                        Sağlıklı, doğal ve kişiye özel diş hekimliği hizmetiyle Nişantaşı'ndaki kliniğimizde, her tedavi sürecini bir sanat eseri titizliğiyle planlıyoruz.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#randevu" class="btn btn-primary">Randevu Talebi Oluştur</a>
+                        <a href="#galeri" class="btn btn-text">Mutlu Müşterilerimizi İncele</a>
+                    </div>
+                </div>
+                <div class="hero-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=85" alt="Dr. Nihan Sert Muayene Odası" class="hero-image">
+                </div>
+            </div>
+        </section>
+
+        <!-- Mutlu Müşteriler / Photo Gallery Section -->
+        <section id="galeri" class="showcase-section">
+            <div class="section-header">
+                <span class="section-tagline">Fotoğraf Albümü</span>
+                <h2 class="section-title">Mutlu Müşterilerimiz</h2>
+                <p class="section-description">Kliniğimizde gerçekleştirdiğimiz gülüş tasarımı uygulamaları ve steril klinik atmosferimizden doğal kareler.</p>
+            </div>
+            
+            <!-- Carousel Wrapper -->
+            <div class="carousel-wrapper">
+                <button type="button" class="carousel-nav-btn prev-btn" aria-label="Önceki Fotoğraf">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                
+                <div class="carousel-viewport">
+                    <div class="carousel-track">
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85" alt="Mutlu Gülüş Tasarımı" class="carousel-image">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=1200&q=85" alt="Modern Diş Tedavi Ünitesi" class="carousel-image">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1200&q=85" alt="Hassas Tedavi Yaklaşımı" class="carousel-image">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=85" alt="Klinik Karşılama Alanı" class="carousel-image">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=85" alt="Doğal Sağlıklı Gülüş" class="carousel-image">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1200&q=85" alt="Kişiye Özel Planlama" class="carousel-image">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="carousel-nav-btn next-btn" aria-label="Sonraki Fotoğraf">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" class="indicator-dot is-active" data-slide="0" aria-label="Fotoğraf 1"></button>
+                <button type="button" class="indicator-dot" data-slide="1" aria-label="Fotoğraf 2"></button>
+                <button type="button" class="indicator-dot" data-slide="2" aria-label="Fotoğraf 3"></button>
+                <button type="button" class="indicator-dot" data-slide="3" aria-label="Fotoğraf 4"></button>
+                <button type="button" class="indicator-dot" data-slide="4" aria-label="Fotoğraf 5"></button>
+                <button type="button" class="indicator-dot" data-slide="5" aria-label="Fotoğraf 6"></button>
+            </div>
+        </section>
+
+        <!-- Booking, Contact & Location Section -->
+        <section id="randevu" class="booking-section">
+            <div class="booking-container">
+                
+                <!-- Booking Form -->
+                <div class="booking-form-wrapper">
+                    <h2 class="form-title">Randevu Talebi</h2>
+                    <p class="form-subtitle">Hızlı randevu ön kaydı için formu doldurun, sizi 30 dakika içinde arayalım.</p>
+                    
+                    <form id="appointment-form" novalidate>
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label for="form-name">Adınız Soyadınız</label>
+                                <input type="text" id="form-name" placeholder="Örn. Selin Yılmaz" required>
+                                <span class="error-message">Lütfen adınızı ve soyadınızı girin.</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-phone">Telefon Numaranız</label>
+                                <input type="tel" id="form-phone" placeholder="+90 555 000 00 00" value="+90 " required>
+                                <span class="error-message">Lütfen geçerli bir telefon numarası girin.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-email">E-posta Adresiniz</label>
+                            <input type="email" id="form-email" placeholder="isim@domain.com" required>
+                            <span class="error-message">Lütfen geçerli bir e-posta adresi girin.</span>
+                        </div>
+
+                        <div class="form-group-row">
+                            <div class="form-group form-group--calendar">
+                                <label>Tercih Ettiğiniz Tarih</label>
+                                <input type="hidden" id="form-date" required>
+                                <!-- Custom Calendar Widget -->
+                                <div class="cal-widget" id="cal-widget">
+                                    <div class="cal-header">
+                                        <button type="button" class="cal-nav-btn" id="cal-prev" aria-label="Önceki ay">&#8249;</button>
+                                        <span class="cal-month-label" id="cal-month-label"></span>
+                                        <button type="button" class="cal-nav-btn" id="cal-next" aria-label="Sonraki ay">&#8250;</button>
+                                    </div>
+                                    <div class="cal-days-header">
+                                        <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span>
+                                        <span class="cal-weekend">Cmt</span><span class="cal-weekend">Paz</span>
+                                    </div>
+                                    <div class="cal-grid" id="cal-grid"></div>
+                                </div>
+                                <span class="error-message">Lütfen bir tarih seçin.</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-time">Tercih Ettiğiniz Saat</label>
+                                <select id="form-time" required disabled>
+                                    <option value="" disabled selected>Önce tarih seçiniz</option>
+                                </select>
+                                <span class="error-message">Lütfen bir saat seçin.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-notes">Eklemek İstediğiniz Notlar (İsteğe Bağlı)</label>
+                            <textarea id="form-notes" rows="3" placeholder="Yaşadığınız problem veya sormak istediğiniz soruları buraya yazabilirsiniz."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Talebi Gönder</button>
+                    </form>
+                    
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="form-success" class="form-success-container">
+                        <div class="success-icon-wrapper">
+                            <svg class="success-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Talep Başarıyla Alındı</h3>
+                        <p>Randevu talebiniz sisteme iletilmiştir. Belirttiğiniz telefon numarasından en kısa sürede sizinle iletişime geçeceğiz.</p>
+                        <button type="button" id="btn-reset-form" class="btn btn-secondary btn-sm">Yeni Talep Oluştur</button>
+                    </div>
+                </div>
+
+                <!-- Contact & Location Info -->
+                <div class="contact-info-wrapper">
+                    <div class="info-block">
+                        <span class="info-tagline">İletişim & Konum</span>
+                        <h2 class="info-title">Kliniğimize Ulaşın</h2>
+                        <p class="info-description">Haftanın 6 günü boyunca Nişantaşı merkezindeki kliniğimizde hizmet vermekteyiz.</p>
+                    </div>
+
+                    <div class="contact-details">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Telefon</span>
+                                <a href="tel:+902125550123" class="detail-link">+90 (212) 555 01 23</a>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">E-posta</span>
+                                <a href="mailto:info@drnihansert.com" class="detail-link">info@drnihansert.com</a>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Çalışma Saatleri</span>
+                                <span class="detail-text">Pazartesi – Cumartesi: 09:00 – 19:00</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Klinik Adresi</span>
+                                <span class="detail-text">Vali Konağı Caddesi, No:45 Kat:2, Nişantaşı, Şişli / İstanbul</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Designed Map Card -->
+                    <div class="map-card">
+                        <div class="map-illustration">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3008.975459344449!2d28.988220376569116!3d41.0475470713448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab7a38fe4187f%3A0x6ec0c54178593a2!2zVmFsaSBLb25hxJ_EsSBDZC4sIMWacWZsaS_EsHN0YW5idWwsIFR1cmtleQ!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus" width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                        <div class="map-actions">
+                            <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm btn-full">Google Haritalar'da Aç</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="footer-logo-title">DR. NİHAN SERT</span>
+                    <span class="footer-logo-subtitle">Özel Ağız ve Diş Sağlığı Kliniği</span>
+                </div>
+                <div class="footer-links">
+                    <!-- About link requested to be at the bottom as a link -->
+                    <button type="button" id="about-link" class="footer-link-btn">Hakkımızda</button>
+                    <a href="#galeri">Mutlu Müşteriler</a>
+                    <a href="#randevu">Randevu</a>
+                </div>
+            </div>
+            
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <p class="copyright">© 2026 Dr. Nihan Sert. Tüm hakları saklıdır. Bu sitedeki bilgiler bilgilendirme amaçlıdır, teşhis niteliği taşımaz.</p>
+                
+                <!-- Social media icons at the bottom -->
+                <div class="social-icons">
+                    <a href="https://instagram.com" class="social-icon-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                        <svg class="social-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="https://linkedin.com" class="social-icon-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                        <svg class="social-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect x="2" y="9" width="4" height="12"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                        </svg>
+                    </a>
+                    <a href="https://facebook.com" class="social-icon-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                        <svg class="social-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- About Modal (Opens via About button at the bottom) -->
+    <div id="about-modal" class="modal-overlay" style="display: none;" aria-hidden="true" role="dialog">
+        <div class="modal-container">
+            <button type="button" id="modal-close" class="modal-close-btn" aria-label="Kapat">
+                <svg class="close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-content">
+                <div class="modal-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=800&q=80" alt="Dr. Nihan Sert Portre" class="modal-image">
+                </div>
+                <div class="modal-text-content">
+                    <span class="modal-subtitle">Hekimimiz Hakkında</span>
+                    <h2 class="modal-title">Dr. Nihan Sert</h2>
+                    <p class="modal-role">Kurucu Diş Hekimi & Estetik Diş Hekimliği Uzmanı</p>
+                    
+                    <div class="modal-bio">
+                        <p>
+                            İstanbul Üniversitesi Diş Hekimliği Fakültesi'nden mezun olduktan sonra, estetik diş hekimliği ve konservatif diş tedavileri üzerine yoğunlaştı. Avrupa'da ve Türkiye'de mikro-dental tedaviler, lamina venerler ve dijital gülüş tasarımı alanlarında çok sayıda uluslararası eğitime katıldı.
+                        </p>
+                        <p>
+                            2018 yılında Nişantaşı'nda kurduğu butik kliniğinde, her hastasına geniş bir zaman ayırarak, biyolojik uyumluluğu yüksek, estetik ve işlevsel restorasyonlar tasarlamaktadır. Tedavilerindeki temel felsefe; doğallığı korumak ve hasta memnuniyetini en üst düzeyde tutmaktır.
+                        </p>
+                    </div>
+
+                    <div class="modal-academic">
+                        <h4 class="academic-title">Uzmanlık Alanları</h4>
+                        <ul class="academic-list">
+                            <li>Estetik Gülüş Tasarımı (Porselen Lamine Venerler)</li>
+                            <li>Dijital Diş Hekimliği Yaklaşımları</li>
+                            <li>Adheziv Restorasyonlar (Kompozit Laminalar)</li>
+                            <li>Kanal Tedavisi ve Mikro-Cerrahi Uygulamaları</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
                     <h1 class="hero-title">Gülüşünüzü sanata dönüştüren detaylar.</h1>
                     <p class="hero-description">
                         Sağlıklı, doğal ve kişiye özel diş hekimliği hizmetiyle Nişantaşı'ndaki kliniğimizde, her tedavi sürecini bir sanat eseri titizliğiyle planlıyoruz.
