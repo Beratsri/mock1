@@ -1,11 +1,3 @@
-/**
- * Dr. Nihan Sert - Dentist Website Interactive Controller
- * Features: Form validation, Booking state management, About modal overlays.
- * No emojis. No gradients. Clean custom JS.
- */
-
-// Google Apps Script Web App URL (Buraya kendi Web App URL'nizi yapıştırın)
-// Boş bırakılırsa sistem otomatik olarak Simülasyon modunda çalışır.
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyX0h3ez9_PS1I6hXbzLBbS3eacYSC6LJg0L51vfkCHsO65bQU-Wg6LSQpjpjP0ks/exec';
 
 // Klinik Çalışma Saatleri (Takvimde listelenecek saatler)
@@ -13,6 +5,24 @@ const CLINIC_HOURS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:
 
 // Dolu olan randevu saatlerinin tutulacağı hafıza listesi
 let busyAppointments = [];
+
+// Güvenlik kodunun doğru değeri (runtime'da üretilir)
+let _captchaAnswer = '';
+
+/**
+ * 5 karakterli büyük/küçük harf + rakam karışık güvenlik kodu üretir.
+ * Her yanlış cevap veya sayfa yüklemesinde yeniden üretilir.
+ */
+function generateCaptcha() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let code = '';
+    for (let i = 0; i < 5; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    _captchaAnswer = code;
+    const el = document.getElementById('captcha-question');
+    if (el) el.textContent = code;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     initAboutModal();
@@ -138,6 +148,19 @@ function initAppointmentForm() {
 
     // Initialize phone input mask and prefix
     initPhoneMask();
+
+    // Generate first CAPTCHA code
+    generateCaptcha();
+
+    // Refresh button generates a new code
+    const captchaRefreshBtn = document.getElementById('captcha-refresh');
+    if (captchaRefreshBtn) {
+        captchaRefreshBtn.addEventListener('click', () => {
+            generateCaptcha();
+            const ci = document.getElementById('form-captcha');
+            if (ci) ci.value = '';
+        });
+    }
 
     const dateInput = document.getElementById('form-date');
     const timeSelect = document.getElementById('form-time');
@@ -275,11 +298,23 @@ function initAppointmentForm() {
         const isValid = validateForm();
 
         if (isValid) {
+            // Validate CAPTCHA (büyük/küçük harf duyarlı - birebir eşleşme)
+            const captchaInput = document.getElementById('form-captcha');
+            const captchaGroup = captchaInput ? captchaInput.closest('.form-group') : null;
+            const userAnswer = captchaInput ? captchaInput.value.trim() : '';
+
+            if (!userAnswer || userAnswer !== _captchaAnswer) {
+                if (captchaGroup) captchaGroup.classList.add('is-invalid');
+                generateCaptcha();
+                if (captchaInput) captchaInput.value = '';
+                return;
+            }
+            if (captchaGroup) captchaGroup.classList.remove('is-invalid');
+
             // Extract values
             const formData = {
                 name: document.getElementById('form-name').value.trim(),
                 phone: document.getElementById('form-phone').value.trim(),
-                email: document.getElementById('form-email').value.trim(),
                 date: dateInput.value,
                 time: timeSelect.value,
                 notes: document.getElementById('form-notes').value.trim()
@@ -300,6 +335,7 @@ function initAppointmentForm() {
 
                 // Reset form inputs
                 form.reset();
+                generateCaptcha(); // Yeni güvenlik sorusu üret
                 if (timeSelect) {
                     timeSelect.disabled = true;
                     timeSelect.innerHTML = '<option value="" disabled selected>Önce tarih seçiniz</option>';
